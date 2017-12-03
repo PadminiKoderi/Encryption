@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<script src="~/Scripts/aes.js"></script>
+
+<script type="text/javascript">
+    var encryptedlogin;
+    function encrypt() {
+        debugger;
+        var txtData = document.getElementById("txtInput").value;
+        var key = CryptoJS.enc.Utf8.parse('8080808080808080');
+        var iv = CryptoJS.enc.Utf8.parse('8080808080808080');
+        encryptedlogin = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(txtData), key,
+            {
+                keySize: 128 / 8,
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+        alert("Success");
+        //document.getElementById("<%=hdnInput.ClientID %>").value = encryptedlogin;
+    }
+    function decrypt() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/Decrypt",
+            data: '{value: "' + encryptedlogin + '" }',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                alert(response);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+ 
+</script>
+
+<input type="text" id="txtInput" />
+<input type="hidden" id="hdnInput"/>
+<button type="submit" onclick="encrypt()">Encrypt</button>
+<button type="submit" onclick="decrypt()">Decrypt</button>
+
